@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catégories{% endblock %}
+
+{% block body %}
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 1rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .search {
+            display: flex;
+            justify-content: center;
+            margin: 0 1rem 1rem;
+        }
+
+        .search input {
+            width: 100%;
+            max-width: 500px;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filters select {
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 0.9rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding: 0 1rem 5rem;
+        }
+
+        .card {
+            background: #d9d9d9;
+            padding: 2rem 1rem;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 0.6rem 0;
+            border-top: 1px solid #ccc;
+            font-size: 0.8rem;
+        }
+
+        footer div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #aaa;
+        }
+
+        footer div.active {
+            color: black;
+            font-weight: bold;
+        }
+    </style>
+
+    <header>Categories</header>
+
+    <div class="search">
+        <input type="text" placeholder="Search">
+    </div>
+
+    <div class="filters">
+        <select><option>Lieux</option></select>
+        <select><option>Dates</option></select>
+        <select><option>Themes</option></select>
+    </div>
+
+    <div class="grid">
+        <div class="card">Concert</div>
+        <div class="card">Theatre</div>
+        <div class="card">Exposition</div>
+        <div class="card">Festival</div>
+        <div class="card"></div>
+        <div class="card"></div>
+    </div>
+
+    <footer>
+        <div>
+            <span>👤</span>
+            <span>Profil</span>
+        </div>
+        <div>
+            <span>🤍</span>
+            <span>Wishlist</span>
+        </div>
+        <div class="active">
+            <span>🔍</span>
+            <span>Explorer</span>
+        </div>
+    </footer>
+{% endblock %}
