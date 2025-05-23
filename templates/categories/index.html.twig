@@ -100,10 +100,12 @@
     </div>
 
     <div class="grid">
-        <div class="card">Concert</div>
-        <div class="card">Theatre</div>
-        <div class="card">Exposition</div>
-        <div class="card">Festival</div>
+        <a href="{{ path('app_concert', { slug: 'concert' }) }}" class="card">Concert</a>
+        <a href="{{ path('app_exposition', { slug: 'exposition' }) }}" class="card">Exposition</a>
+        <a href="{{ path('app_festival', { slug: 'festival' }) }}" class="card">Féstival</a>
+        <a href="{{ path('app_theatre', { slug: 'theatre' }) }}" class="card">Théâtre</a>
+    </div>
+
         <div class="card"></div>
         <div class="card"></div>
     </div>
