@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block body %}
+    <h1>Événements pour la catégorie : {{ category.name }}</h1>
+
+    {% if events is empty %}
+        <p>Aucun événement trouvé pour cette catégorie.</p>
+    {% else %}
+        <ul>
+            {% for event in events %}
+                <li>{{ event.title }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

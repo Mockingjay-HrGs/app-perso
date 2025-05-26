@@ -3,125 +3,50 @@
 {% block title %}Catégories{% endblock %}
 
 {% block body %}
-    <style>
-        body {
-            font-family: sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-        }
+<style>
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.5rem;
+        padding: 2rem;
+    }
 
-        header {
-            text-align: center;
-            padding: 1rem;
-            font-size: 1.6rem;
-            font-weight: bold;
-        }
+    .category-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, #fdfbfb, #ebedee);
+        border-radius: 15px;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-align: center;
+    }
 
-        .search {
-            display: flex;
-            justify-content: center;
-            margin: 0 1rem 1rem;
-        }
+    .category-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
 
-        .search input {
-            width: 100%;
-            max-width: 500px;
-            padding: 0.7rem 1rem;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-        }
+    h1 {
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 2rem;
+        color: #222;
+    }
+</style>
 
-        .filters {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
+<h1>Explorer les catégories d'événements</h1>
 
-        .filters select {
-            padding: 0.5rem;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 0.9rem;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            padding: 0 1rem 5rem;
-        }
-
-        .card {
-            background: #d9d9d9;
-            padding: 2rem 1rem;
-            text-align: center;
-            font-weight: bold;
-            border-radius: 10px;
-        }
-
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            background: white;
-            padding: 0.6rem 0;
-            border-top: 1px solid #ccc;
-            font-size: 0.8rem;
-        }
-
-        footer div {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #aaa;
-        }
-
-        footer div.active {
-            color: black;
-            font-weight: bold;
-        }
-    </style>
-
-    <header>Categories</header>
-
-    <div class="search">
-        <input type="text" placeholder="Search">
-    </div>
-
-    <div class="filters">
-        <select><option>Lieux</option></select>
-        <select><option>Dates</option></select>
-        <select><option>Themes</option></select>
-    </div>
-
-    <div class="grid">
-        <a href="{{ path('app_concert', { slug: 'concert' }) }}" class="card">Concert</a>
-        <a href="{{ path('app_exposition', { slug: 'exposition' }) }}" class="card">Exposition</a>
-        <a href="{{ path('app_festival', { slug: 'festival' }) }}" class="card">Féstival</a>
-        <a href="{{ path('app_theatre', { slug: 'theatre' }) }}" class="card">Théâtre</a>
-    </div>
-
-        <div class="card"></div>
-        <div class="card"></div>
-    </div>
-
-    <footer>
-        <div>
-            <span>👤</span>
-            <span>Profil</span>
-        </div>
-        <div>
-            <span>🤍</span>
-            <span>Wishlist</span>
-        </div>
-        <div class="active">
-            <span>🔍</span>
-            <span>Explorer</span>
-        </div>
-    </footer>
+<div class="category-grid">
+    {% for category in categories %}
+        <a href="{{ path('app_category_detail', { slug: category.slug }) }}" class="category-card">
+            {{ category.name }}
+        </a>
+    {% endfor %}
+</div>
 {% endblock %}

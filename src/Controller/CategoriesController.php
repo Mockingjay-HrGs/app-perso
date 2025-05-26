@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\UserRepository;
+use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,19 +10,32 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CategoriesController extends AbstractController
 {
     #[Route('/categories', name: 'app_categories')]
-    public function index(): Response
+    public function index(CategoryRepository $categoryRepository): Response
     {
-
-        $superAdmin = ["ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_EDITOR", "ROLE_USER"];
-        $admin = ["ROLE_ADMIN", "ROLE_EDITOR", "ROLE_USER"];
-        $editor = ["ROLE_EDITOR", "ROLE_USER"];
-        $user = ["ROLE_USER"];
-
+        $categories = $categoryRepository->findAll(); // ← On récupère les catégories
 
         return $this->render('categories/index.html.twig', [
-            'controller_name' => 'CategoriesController',
+            'categories' => $categories, // ← On les envoie à la vue
         ]);
     }
+
+    #[Route('/categories/{slug}', name: 'app_category_detail')]
+    public function showCategory(string $slug, CategoryRepository $categoryRepository): Response
+    {
+        $category = $categoryRepository->findOneBy(['slug' => $slug]);
+
+        if (!$category) {
+            throw $this->createNotFoundException('Catégorie introuvable');
+        }
+
+        $events = $category->getEvents(); // Cette méthode doit exister dans ton entité
+
+        return $this->render('categories/detail.html.twig', [
+            'category' => $category,
+            'events' => $events,
+        ]);
+    }
+
     #[Route('/super-admin/dashboard', name: 'app_super_admin_dashboard')]
     public function dashboard(): Response
     {
