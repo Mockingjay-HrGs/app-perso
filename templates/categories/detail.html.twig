@@ -3,15 +3,64 @@
 {% block title %}{{ category.name }}{% endblock %}
 
 {% block body %}
-    <h1>Événements pour la catégorie : {{ category.name }}</h1>
+<style>
+    .event-header {
+        text-align: center;
+        margin: 2rem 0;
+        font-size: 2rem;
+        color: #2c3e50;
+    }
 
-    {% if events is empty %}
-        <p>Aucun événement trouvé pour cette catégorie.</p>
-    {% else %}
-        <ul>
-            {% for event in events %}
-                <li>{{ event.title }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    .event-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .event-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 1rem;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: none;
+        color: #2c3e50;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease;
+    }
+
+    .event-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .event-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #34495e;
+    }
+
+    .no-events {
+        text-align: center;
+        font-style: italic;
+        color: #888;
+        margin-top: 2rem;
+    }
+</style>
+
+<h1 class="event-header">Événements : {{ category.name }}</h1>
+
+{% if events is empty %}
+    <p class="no-events">Aucun événement pour cette catégorie pour le moment.</p>
+{% else %}
+    <div class="event-grid">
+        {% for event in events %}
+            <a href="{{ path('event_show', { slug: event.slug }) }}" class="event-card">
+                <strong>{{ event.title }}</strong>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
 {% endblock %}

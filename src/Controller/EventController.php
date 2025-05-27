@@ -5,14 +5,22 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\EventRepository;
+
 
 final class EventController extends AbstractController
 {
-    #[Route('/event', name: 'app_event')]
-    public function index(): Response
+    #[Route('/evenement/{slug}', name: 'event_show')]
+    public function show(string $slug, EventRepository $eventRepository): Response
     {
-        return $this->render('event/index.html.twig', [
-            'controller_name' => 'EventController',
+        $event = $eventRepository->findOneBy(['slug' => $slug]);
+
+        if (!$event) {
+            throw $this->createNotFoundException('Événement introuvable');
+        }
+
+        return $this->render('event/show.html.twig', [
+            'event' => $event,
         ]);
     }
 }
