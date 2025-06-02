@@ -34,7 +34,46 @@
             margin-top: 1rem;
             line-height: 1.6;
         }
+
+        .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background-color: #fff;
+                border-top: 1px solid #ccc;
+                display: flex;
+                justify-content: space-around;
+                padding: 0.5rem 0;
+                font-size: 0.9rem;
+                z-index: 999;
+            }
+
+            .bottom-nav a {
+                text-align: center;
+                color: #666;
+                text-decoration: none;
+            }
+
+            .bottom-nav a.active {
+                color: #000;
+                font-weight: bold;
+            }
+
+            .back-button {
+                        display: inline-block;
+                        margin: 1rem;
+                        padding: 0.4rem 1rem;
+                        background-color: #ddd;
+                        color: #333;
+                        text-decoration: none;
+                        border-radius: 8px;
+                        font-weight: bold;
+                    }
+
+
     </style>
+<a href="{{ app.request.headers.get('referer') ?? path('app_categories') }}" class="back-button">← Retour</a>
+
 
     <div class="event-container">
         <div class="event-title">{{ event.title }}</div>
@@ -45,11 +84,41 @@
 
         <div class="event-info">
             📍 <strong>Lieu :</strong> {{ event.location }}<br>
-            📅 <strong>Date :</strong> {{ event.date|date('d F Y à H\hi') }}
+            📅 <strong>Date :</strong> {{ event.date|date('l d F Y à H:i') }}
+
         </div>
 
         <div class="event-description">
             {{ event.description|nl2br }}
         </div>
+
+    <h3>🎟️ Billets disponibles</h3>
+
+    {% if ticketTypes is empty %}
+        <p>Aucun billet disponible pour cet événement.</p>
+    {% else %}
+        <div class="ticket-grid">
+            {% for ticketType in ticketTypes %}
+                <div class="ticket-card">
+                    <strong>{{ ticketType.name }}</strong><br>
+                    {{ ticketType.description }}<br>
+                    <span>{{ ticketType.price }} €</span><br>
+                    <a href="{{ path('ticket_checkout', {
+                        eventSlug: event.slug,
+                        ticketTypeId: ticketType.id
+                    }) }}" class="btn btn-primary">Acheter</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     </div>
+<footer class="bottom-nav">
+    <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
+        👤<br>Profil
+    </a>
+    <a href="{{ path('app_categories') }}" class="{% if app.request.attributes.get('_route') == 'app_categories' %}active{% endif %}">
+        🔍<br>Explorer
+    </a>
+</footer>
 {% endblock %}

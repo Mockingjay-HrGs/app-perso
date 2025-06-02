@@ -38,9 +38,37 @@
         font-size: 2rem;
         color: #222;
     }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        border-top: 1px solid #ccc;
+        display: flex;
+        justify-content: space-around;
+        padding: 0.5rem 0;
+        font-size: 0.9rem;
+        z-index: 999;
+    }
+
+    .bottom-nav a {
+        text-align: center;
+        color: #666;
+        text-decoration: none;
+    }
+
+    .bottom-nav a.active {
+        color: #000;
+        font-weight: bold;
+    }
+
 </style>
 
 <h1>Explorer les catégories d'événements</h1>
+
+
+
 
 <div class="category-grid">
     {% for category in categories %}
@@ -49,4 +77,13 @@
         </a>
     {% endfor %}
 </div>
+<footer class="bottom-nav">
+    <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
+        👤<br>Profil
+    </a>
+    <a href="{{ path('app_categories') }}" class="{% if app.request.attributes.get('_route') == 'app_categories' %}active{% endif %}">
+        🔍<br>Explorer
+    </a>
+</footer>
+
 {% endblock %}

@@ -11,9 +11,9 @@ use App\Repository\EventRepository;
 final class EventController extends AbstractController
 {
     #[Route('/evenement/{slug}', name: 'event_show')]
-    public function show(string $slug, EventRepository $eventRepository): Response
+    public function show(string $slug, EventRepository $eventRepo): Response
     {
-        $event = $eventRepository->findOneBy(['slug' => $slug]);
+        $event = $eventRepo->findOneBy(['slug' => $slug]);
 
         if (!$event) {
             throw $this->createNotFoundException('Événement introuvable');
@@ -21,6 +21,7 @@ final class EventController extends AbstractController
 
         return $this->render('event/show.html.twig', [
             'event' => $event,
+            'ticketTypes' => $event->getTicketTypes(),
         ]);
     }
 }

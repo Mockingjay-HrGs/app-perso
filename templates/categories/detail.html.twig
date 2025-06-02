@@ -48,9 +48,48 @@
         color: #888;
         margin-top: 2rem;
     }
+
+    .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            z-index: 999;
+        }
+
+        .bottom-nav a {
+            text-align: center;
+            color: #666;
+            text-decoration: none;
+        }
+
+        .bottom-nav a.active {
+            color: #000;
+            font-weight: bold;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 1rem;
+            padding: 0.4rem 1rem;
+            background-color: #ddd;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
 </style>
 
 <h1 class="event-header">Événements : {{ category.name }}</h1>
+
+<a href="{{ path('app_categories') }}" class="back-button">← Retour aux catégories</a>
+
 
 {% if events is empty %}
     <p class="no-events">Aucun événement pour cette catégorie pour le moment.</p>
@@ -63,4 +102,12 @@
         {% endfor %}
     </div>
 {% endif %}
+<footer class="bottom-nav">
+    <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
+        👤<br>Profil
+    </a>
+    <a href="{{ path('app_categories') }}" class="{% if app.request.attributes.get('_route') == 'app_categories' %}active{% endif %}">
+        🔍<br>Explorer
+    </a>
+</footer>
 {% endblock %}

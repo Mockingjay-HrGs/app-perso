@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block body %}
+
+<style>
+        .ticket {
+            background: #f0f0f0;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+    {% if app.user %}
+        <h1>Bienvenue {{ app.user.email }}</h1>
+
+        <h2>🎫 Vos billets</h2>
+
+        {% for ticket in tickets %}
+            <div class="ticket">
+                <strong>{{ ticket.event.title }}</strong> — {{ ticket.ticketType.name }} ({{ ticket.ticketType.price }}€)<br>
+                Code : {{ ticket.code }}<br>
+                Acheté le {{ ticket.createdAt|date('d/m/Y H:i') }}
+            </div>
+        {% else %}
+            <p>Vous n'avez encore acheté aucun billet.</p>
+        {% endfor %}
+
+    {% else %}
+        <h1>Vous devez être connecté pour voir votre profil.</h1>
+    {% endif %}
+{% endblock %}
