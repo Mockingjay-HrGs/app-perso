@@ -4,72 +4,185 @@
 
 {% block body %}
 <style>
+    body {
+        background: linear-gradient(145deg, #1e1e2f, #3a3a5d);
+        font-family: 'Segoe UI', sans-serif;
+        color: #fff;
+        margin: 0;
+        padding-bottom: 4rem;
+    }
+
+    h1 {
+        text-align: center;
+        margin: 2rem 0 1rem;
+        font-size: 2.3rem;
+        font-weight: bold;
+    }
+
+    /* Barre de recherche */
+    .search-bar-container {
+        text-align: center;
+        margin: 1rem 1.5rem 2rem;
+    }
+
+    #searchInput {
+        width: 100%;
+        max-width: 400px;
+        padding: 0.7rem 1rem;
+        border-radius: 12px;
+        border: none;
+        font-size: 1rem;
+        outline: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    #searchInput::placeholder {
+        color: #ccc;
+    }
+
+    #searchInput:focus {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .search-bar-container button {
+        margin-left: 0.5rem;
+        padding: 0.7rem 1.2rem;
+        border-radius: 12px;
+        border: none;
+        font-size: 1rem;
+        font-weight: bold;
+        background: #5f66ff;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .search-bar-container button:hover {
+        background: #4a4efc;
+    }
+
+    /* Grille catégories */
     .category-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1.5rem;
-        padding: 2rem;
+        gap: 1.2rem;
+        padding: 0 1.5rem;
     }
 
     .category-card {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 2rem;
-        background: linear-gradient(135deg, #fdfbfb, #ebedee);
-        border-radius: 15px;
+        padding: 2rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
         text-decoration: none;
-        color: #333;
+        color: #ffffff;
         font-weight: bold;
         font-size: 1.1rem;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
         text-align: center;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(10px);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
     .category-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+        transform: scale(1.04);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
     }
 
-    h1 {
+    /* Grille événements */
+    .event-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 1.5rem;
+    }
+
+    .event-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .event-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .event-card-content {
+        padding: 1rem;
+    }
+
+    .event-card-content h3 {
+        margin: 0 0 0.5rem;
+    }
+
+    .event-card-content p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #bbb;
+    }
+
+    .no-events {
         text-align: center;
-        margin-top: 2rem;
-        font-size: 2rem;
-        color: #222;
+        font-style: italic;
+        color: #ccc;
+        margin-top: 1rem;
     }
 
+    /* Footer */
     .bottom-nav {
         position: fixed;
         bottom: 0;
         width: 100%;
-        background-color: #fff;
-        border-top: 1px solid #ccc;
+        background-color: #111;
+        border-top: 1px solid #333;
         display: flex;
         justify-content: space-around;
-        padding: 0.5rem 0;
+        padding: 0.6rem 0;
         font-size: 0.9rem;
         z-index: 999;
     }
 
     .bottom-nav a {
         text-align: center;
-        color: #666;
+        color: #aaa;
         text-decoration: none;
     }
 
     .bottom-nav a.active {
-        color: #000;
+        color: #fff;
         font-weight: bold;
     }
-
 </style>
 
-<h1>Explorer les catégories d'événements</h1>
+<!-- Titre -->
+<h1>🎭 Explorer les catégories d'événements</h1>
 
+<!-- Barre de recherche -->
+<form method="get" class="search-bar-container">
+    <input
+        type="text"
+        name="q"
+        placeholder="Rechercher un événement..."
+        value="{{ query|default('') }}"
+        id="searchInput"
+    >
+    <button type="submit">Rechercher</button>
+</form>
 
-
-
+<!-- Grille des catégories -->
 <div class="category-grid">
     {% for category in categories %}
         <a href="{{ path('app_category_detail', { slug: category.slug }) }}" class="category-card">
@@ -77,6 +190,30 @@
         </a>
     {% endfor %}
 </div>
+
+<!-- Résultats de recherche (événements filtrés) -->
+{% if query %}
+    <h2 style="text-align:center; margin-top: 2rem;">Résultats pour « {{ query }} » :</h2>
+{% endif %}
+
+<div class="event-grid">
+    {% for event in events %}
+        <a href="{{ path('event_show', { slug: event.slug }) }}" class="event-card" style="text-decoration: none;">
+            <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}">
+            <div class="event-card-content">
+                <h3 class="event-title">{{ event.title }}</h3>
+                <p class="event-date">{{ event.date|date('d F Y') }}</p>
+            </div>
+        </a>
+    {% else %}
+        {% if query %}
+            <p class="no-events">Aucun événement trouvé pour « {{ query }} ».</p>
+        {% endif %}
+    {% endfor %}
+</div>
+
+
+<!-- Footer -->
 <footer class="bottom-nav">
     <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
         👤<br>Profil

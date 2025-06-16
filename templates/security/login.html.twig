@@ -2,44 +2,140 @@
 
 {% block title %}Connexion{% endblock %}
 
-
 {% block body %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+        height: 100vh;
+        background: linear-gradient(135deg, #1e1e2f, #3c3c64);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+    }
 
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
-        <h1 class="h4 mb-4 text-center">Connexion</h1>
+    .login-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 2rem;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.6s ease-out;
+    }
 
-        <form method="post" action="{{ path('app_login') }}">
-            {% if error %}
-                <div class="alert alert-danger">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
+    h1 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
 
-            <div class="form-group mb-3">
-                <label for="inputEmail" class="form-label">Adresse email</label>
-                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
+    label {
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 0.3rem;
+        margin-top: 1rem;
+        color: #ccc;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        padding: 0.7rem;
+        border-radius: 8px;
+        border: none;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        font-size: 1rem;
+    }
+
+    input::placeholder {
+        color: #aaa;
+    }
+
+    .form-check {
+        margin-top: 1rem;
+    }
+
+    .form-check-input {
+        margin-right: 0.5rem;
+    }
+
+    .btn-login {
+        width: 100%;
+        margin-top: 1.5rem;
+        padding: 0.8rem;
+        background: #5f66ff;
+        border: none;
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        border-radius: 10px;
+        transition: background 0.3s ease;
+    }
+
+    .btn-login:hover {
+        background: #4e52d0;
+        cursor: pointer;
+    }
+
+    .links {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .links a {
+        color: #aaa;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .links a:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="login-container">
+    <h1>Connexion</h1>
+
+    <form method="post" action="{{ path('app_login') }}">
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
+        {% endif %}
 
-            <div class="form-group mb-3">
-                <label for="inputPassword" class="form-label">Mot de passe</label>
-                <input type="password" name="password" id="inputPassword" class="form-control" required>
-            </div>
+        <label for="inputEmail">Adresse email</label>
+        <input type="email" id="inputEmail" name="email" value="{{ last_username }}" placeholder="email@example.com" required autofocus>
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <label for="inputPassword">Mot de passe</label>
+        <input type="password" id="inputPassword" name="password" placeholder="••••••••" required>
 
-            <div class="form-check mb-3">
-                <input type="checkbox" name="_remember_me" id="rememberMe" class="form-check-input">
-                <label for="rememberMe" class="form-check-label">Se souvenir de moi</label>
-            </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-            <button class="btn btn-primary w-100" type="submit">Se connecter</button>
-        </form>
-
-        <div class="text-center mt-3">
-            <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
+        <div class="form-check">
+            <input type="checkbox" name="_remember_me" id="rememberMe" class="form-check-input">
+            <label for="rememberMe" class="form-check-label">Se souvenir de moi</label>
         </div>
+
+        <button type="submit" class="btn-login">Se connecter</button>
+    </form>
+
+    <div class="links">
+        <a href="{{ path('app_register') }}">Créer un compte</a><br>
+        <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
     </div>
 </div>
 {% endblock %}

@@ -3,116 +3,191 @@
 {% block title %}{{ event.title }}{% endblock %}
 
 {% block body %}
-    <style>
-        .event-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: #f9f9f9;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
+<style>
+    body {
+        margin: 0;
+        padding-bottom: 5rem;
+        background: linear-gradient(145deg, #1e1e2f, #3a3a5d);
+        font-family: 'Segoe UI', sans-serif;
+        color: #fff;
+    }
 
-        .event-title {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
+    .event-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        animation: fadeIn 0.5s ease-out;
+    }
 
-        .event-image {
-            max-width: 100%;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        .event-info {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-        }
+    .event-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 1.2rem;
+        font-weight: bold;
+        color: #fff;
+    }
 
-        .event-description {
-            margin-top: 1rem;
-            line-height: 1.6;
-        }
+    .event-image {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    }
 
-        .bottom-nav {
-                position: fixed;
-                bottom: 0;
-                width: 100%;
-                background-color: #fff;
-                border-top: 1px solid #ccc;
-                display: flex;
-                justify-content: space-around;
-                padding: 0.5rem 0;
-                font-size: 0.9rem;
-                z-index: 999;
-            }
+    .event-info {
+        font-size: 1.1rem;
+        color: #ccc;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
 
-            .bottom-nav a {
-                text-align: center;
-                color: #666;
-                text-decoration: none;
-            }
+    .event-description {
+        line-height: 1.7;
+        color: #eee;
+        margin-top: 1.5rem;
+    }
 
-            .bottom-nav a.active {
-                color: #000;
-                font-weight: bold;
-            }
+    .ticket-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
 
-            .back-button {
-                        display: inline-block;
-                        margin: 1rem;
-                        padding: 0.4rem 1rem;
-                        background-color: #ddd;
-                        color: #333;
-                        text-decoration: none;
-                        border-radius: 8px;
-                        font-weight: bold;
-                    }
+    .ticket-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        color: #fff;
+        transition: transform 0.2s ease;
+    }
 
+    .ticket-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
 
-    </style>
+    .ticket-card strong {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: #fff;
+    }
+
+    .ticket-card span {
+        color: #00ffb3;
+        font-weight: bold;
+        margin-top: 0.6rem;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        margin-top: 1rem;
+        background: #5f66ff;
+        padding: 0.5rem 1.2rem;
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: #4a4efc;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #333;
+        color: #eee;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .back-button:hover {
+        background-color: #555;
+    }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #111;
+        border-top: 1px solid #333;
+        display: flex;
+        justify-content: space-around;
+        padding: 0.6rem 0;
+        font-size: 0.9rem;
+        z-index: 1000;
+    }
+
+    .bottom-nav a {
+        color: #aaa;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .bottom-nav a.active {
+        color: #fff;
+        font-weight: bold;
+    }
+</style>
+
 <a href="{{ app.request.headers.get('referer') ?? path('app_categories') }}" class="back-button">← Retour</a>
 
+<div class="event-container">
+    <div class="event-title">{{ event.title }}</div>
 
-    <div class="event-container">
-        <div class="event-title">{{ event.title }}</div>
-
-        {% if event.image %}
-            <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}" class="event-image">
-        {% endif %}
-
-        <div class="event-info">
-            📍 <strong>Lieu :</strong> {{ event.location }}<br>
-            📅 <strong>Date :</strong> {{ event.date|date('l d F Y à H:i') }}
-
-        </div>
-
-        <div class="event-description">
-            {{ event.description|nl2br }}
-        </div>
-
-    <h3>🎟️ Billets disponibles</h3>
-
-    {% if ticketTypes is empty %}
-        <p>Aucun billet disponible pour cet événement.</p>
-    {% else %}
-        <div class="ticket-grid">
-            {% for ticketType in ticketTypes %}
-                <div class="ticket-card">
-                    <strong>{{ ticketType.name }}</strong><br>
-                    {{ ticketType.description }}<br>
-                    <span>{{ ticketType.price }} €</span><br>
-                    <a href="{{ path('ticket_checkout', {
-                        eventSlug: event.slug,
-                        ticketTypeId: ticketType.id
-                    }) }}" class="btn btn-primary">Acheter</a>
-                </div>
-            {% endfor %}
-        </div>
+    {% if event.image %}
+        <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.title }}" class="event-image">
     {% endif %}
 
+    <div class="event-info">
+        📍 <strong>Lieu :</strong> {{ event.location }}<br>
+        📅 <strong>Date :</strong> {{ event.date|date('l d F Y à H\hi') }}
     </div>
+
+    <div class="event-description">
+        {{ event.description|nl2br }}
+    </div>
+
+    <h3 style="margin-top:2rem;">🎟️ Billets disponibles</h3>
+
+    {% for ticketType in ticketTypes %}
+        <div class="ticket-card">
+            <strong>{{ ticketType.name }}</strong>
+            {{ ticketType.description }}<br>
+            <span>{{ ticketType.price }} €</span>
+            {% if ticketType.id is defined and ticketType.id is not null %}
+                <a href="{{ path('app_ticket_pay', {
+                    eventSlug: event.slug,
+                    id: ticketType.id
+                }) }}" class="btn-primary">Acheter</a>
+            {% else %}
+                <p style="color: #bbb;">ID de billet manquant.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
 <footer class="bottom-nav">
     <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
         👤<br>Profil

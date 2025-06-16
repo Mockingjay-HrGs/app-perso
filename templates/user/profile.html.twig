@@ -3,32 +3,120 @@
 {% block title %}Mon Profil{% endblock %}
 
 {% block body %}
-
 <style>
-        .ticket {
-            background: #f0f0f0;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-    </style>
+    body {
+        background-color: #f9f9f9;
+        font-family: 'Segoe UI', sans-serif;
+        padding-bottom: 4rem;
+    }
+
+    .profile-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-header h1 {
+        font-size: 2rem;
+        color: #2c3e50;
+    }
+
+    .profile-header p {
+        color: #888;
+        font-size: 1rem;
+    }
+
+    .ticket {
+        background: #ecf0f1;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .ticket strong {
+        font-size: 1.1rem;
+        color: #2c3e50;
+    }
+
+    .ticket small {
+        display: block;
+        color: #7f8c8d;
+        margin-top: 0.3rem;
+    }
+
+    .no-tickets {
+        text-align: center;
+        font-style: italic;
+        color: #999;
+        margin-top: 2rem;
+    }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        border-top: 1px solid #ccc;
+        display: flex;
+        justify-content: space-around;
+        padding: 0.5rem 0;
+        font-size: 0.9rem;
+        z-index: 999;
+    }
+
+    .bottom-nav a {
+        text-align: center;
+        color: #666;
+        text-decoration: none;
+    }
+
+    .bottom-nav a.active {
+        color: #000;
+        font-weight: bold;
+    }
+</style>
+
+<div class="profile-container">
     {% if app.user %}
-        <h1>Bienvenue {{ app.user.email }}</h1>
+        <div class="profile-header">
+            <h1>Bienvenue {{ app.user.email }}</h1>
+            <p>Voici la liste de vos billets achetés</p>
+        </div>
 
         <h2>🎫 Vos billets</h2>
 
-        {% for ticket in tickets %}
-            <div class="ticket">
-                <strong>{{ ticket.event.title }}</strong> — {{ ticket.ticketType.name }} ({{ ticket.ticketType.price }}€)<br>
-                Code : {{ ticket.code }}<br>
-                Acheté le {{ ticket.createdAt|date('d/m/Y H:i') }}
-            </div>
+        {% if tickets is empty %}
+            <p class="no-tickets">Vous n'avez encore acheté aucun billet.</p>
         {% else %}
-            <p>Vous n'avez encore acheté aucun billet.</p>
-        {% endfor %}
-
+            {% for ticket in tickets %}
+                <div class="ticket">
+                    <strong>{{ ticket.event.title }}</strong><br>
+                    {{ ticket.ticketType.name }} — {{ ticket.ticketType.price }} €<br>
+                    <small>Code : {{ ticket.code }}</small>
+                    <small>Acheté le {{ ticket.createdAt|date('d/m/Y H:i') }}</small>
+                </div>
+            {% endfor %}
+        {% endif %}
     {% else %}
         <h1>Vous devez être connecté pour voir votre profil.</h1>
     {% endif %}
+</div>
+
+<footer class="bottom-nav">
+    <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
+        👤<br>Profil
+    </a>
+    <a href="{{ path('app_categories') }}" class="{% if app.request.attributes.get('_route') == 'app_categories' %}active{% endif %}">
+        🔍<br>Explorer
+    </a>
+</footer>
 {% endblock %}

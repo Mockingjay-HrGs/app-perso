@@ -2,12 +2,23 @@
 
 namespace App\Controller;
 
-class PaymentController
+use App\Entity\Ticket;
+use App\Entity\TicketType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
+
+class PaymentController extends AbstractController
 {
     #[Route('/paiement/{id}', name: 'app_ticket_pay')]
-    public function pay(TicketType $ticketType, EntityManagerInterface $em, Security $security): Response
+    public function pay(
+        TicketType             $ticketType,
+        EntityManagerInterface $em
+    ): Response
     {
-        $user = $security->getUser();
+        $user = $this->getUser();
 
         if (!$user) {
             $this->addFlash('error', 'Vous devez être connecté pour acheter un billet.');
@@ -20,13 +31,13 @@ class PaymentController
         $ticket->setEvent($ticketType->getEvent());
         $ticket->setCode(uniqid('TICKET-'));
         $ticket->setCreatedAt(new \DateTimeImmutable());
+        $ticket->setStatus('paid');
 
         $em->persist($ticket);
         $em->flush();
 
-        $this->addFlash('success', 'Paiement fictif réussi. Billet ajouté à votre profil !');
+        $this->addFlash('success', 'Billet ajouté à votre profil !');
 
         return $this->redirectToRoute('app_profile');
     }
-
 }

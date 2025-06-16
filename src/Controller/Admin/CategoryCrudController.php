@@ -31,6 +31,7 @@ class CategoryCrudController extends AbstractCrudController
             IdField::new('id')
                 ->hideOnForm(),
             TextField::new('name'),
+
         ];
     }
 }

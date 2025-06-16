@@ -3,19 +3,40 @@
 namespace App\Controller;
 
 use App\Repository\CategoryRepository;
+use App\Repository\EventRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class CategoriesController extends AbstractController
 {
     #[Route('/categories', name: 'app_categories')]
-    public function index(CategoryRepository $categoryRepository): Response
-    {
-        $categories = $categoryRepository->findAll(); // ← On récupère les catégories
+    public function index(
+        CategoryRepository $categoryRepository,
+        EventRepository $eventRepository,
+        Request $request
+    ): Response {
+        $categories = $categoryRepository->findAll();
+
+        // ✅ Récupère ?q= depuis l'URL
+        $query = $request->query->get('q');
+
+        if ($query) {
+            // ✅ Requête filtrée avec Doctrine DQL
+            $events = $eventRepository->createQueryBuilder('e')
+                ->where('LOWER(e.title) LIKE :q')
+                ->setParameter('q', '%' . strtolower($query) . '%')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $events = $eventRepository->findAll();
+        }
 
         return $this->render('categories/index.html.twig', [
-            'categories' => $categories, // ← On les envoie à la vue
+            'categories' => $categories,
+            'events' => $events,
+            'query' => $query // ✅ Pour pré-remplir l'input
         ]);
     }
 
@@ -28,7 +49,7 @@ final class CategoriesController extends AbstractController
             throw $this->createNotFoundException('Catégorie introuvable');
         }
 
-        $events = $category->getEvents(); // Cette méthode doit exister dans ton entité
+        $events = $category->getEvents();
 
         return $this->render('categories/detail.html.twig', [
             'category' => $category,
