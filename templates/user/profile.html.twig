@@ -1,131 +1,200 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon Profil{% endblock %}
+{% block title %}Mon profil - Mes billets{% endblock %}
 
 {% block body %}
 <style>
     body {
-        background-color: #f9f9f9;
+        background: linear-gradient(145deg, #1e1e2f, #3a3a5d);
+        color: #fff;
         font-family: 'Segoe UI', sans-serif;
-        padding-bottom: 4rem;
-    }
-
-    .profile-container {
-        max-width: 900px;
-        margin: 2rem auto;
         padding: 2rem;
-        background: #fff;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    .profile-header {
+    h1 {
         text-align: center;
         margin-bottom: 2rem;
     }
 
-    .profile-header h1 {
-        font-size: 2rem;
-        color: #2c3e50;
+    .tickets-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
     }
 
-    .profile-header p {
-        color: #888;
-        font-size: 1rem;
-    }
-
-    .ticket {
-        background: #ecf0f1;
-        padding: 1rem 1.5rem;
+    .ticket-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 12px;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
-
-    .ticket strong {
-        font-size: 1.1rem;
-        color: #2c3e50;
-    }
-
-    .ticket small {
-        display: block;
-        color: #7f8c8d;
-        margin-top: 0.3rem;
-    }
-
-    .ticket a.delete-link {
-        display: inline-block;
-        margin-top: 0.5rem;
-        color: #e74c3c;
-        font-weight: bold;
-        text-decoration: underline;
-    }
-
-    .no-tickets {
+        padding: 1rem;
         text-align: center;
-        font-style: italic;
-        color: #999;
-        margin-top: 2rem;
+        transition: transform 0.2s ease;
+    }
+
+    .ticket-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+
+    .ticket-card strong {
+        display: block;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .status {
+        display: inline-block;
+        margin: 0.5rem 0;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+    }
+
+    .status-payé {
+        background: #4caf50;
+        color: #fff;
+    }
+
+    .status-disponible {
+        background: #2196f3;
+        color: #fff;
+    }
+
+    .status-annulé {
+        background: #f44336;
+        color: #fff;
+    }
+
+    .ticket-code {
+        font-family: monospace;
+        background: #000;
+        color: #0f0;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        margin-top: 0.8rem;
+        background: #5f66ff;
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: #4a4efc;
+    }
+
+    .btn-cancel {
+        display: inline-block;
+        margin-top: 0.8rem;
+        background: #f44336;
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        background: #d32f2f;
     }
 
     .bottom-nav {
         position: fixed;
         bottom: 0;
         width: 100%;
-        background-color: #fff;
-        border-top: 1px solid #ccc;
+        background-color: #111;
+        border-top: 1px solid #333;
         display: flex;
         justify-content: space-around;
-        padding: 0.5rem 0;
+        padding: 0.6rem 0;
         font-size: 0.9rem;
-        z-index: 999;
+        z-index: 1000;
     }
 
     .bottom-nav a {
+        color: #aaa;
         text-align: center;
-        color: #666;
         text-decoration: none;
     }
 
     .bottom-nav a.active {
-        color: #000;
+        color: #fff;
         font-weight: bold;
+    }
+
+    /* Modale style */
+    #ticketModal {
+        display: none; /* ✅ Important : masqué par défaut ! */
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+
+    .modal-content {
+        background: #fff;
+        color: #000;
+        padding: 2rem;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 400px;
+    }
+
+    .qr-code {
+        margin-top: 1rem;
+        border: 4px solid #000;
+        border-radius: 10px;
     }
 </style>
 
-<div class="profile-container">
-    {% if app.user %}
-        <div class="profile-header">
-            <h1>Bienvenue {{ app.user.email }}</h1>
-            <p>Voici la liste de vos billets achetés</p>
-        </div>
+<h1>🎟️ Mes Billets</h1>
 
-        <h2>🎫 Vos billets</h2>
+{% if tickets|length == 0 %}
+    <p style="text-align: center;">Vous n'avez pas encore de billet.</p>
+{% else %}
+    <div class="tickets-container">
+        {% for ticket in tickets %}
+            <div class="ticket-card">
+                <strong>{{ ticket.ticketType.name }}</strong>
+                <p>Événement : {{ ticket.event.title }}</p>
+                <p>Prix : {{ ticket.ticketType.price }} €</p>
 
-        {% if tickets is empty %}
-            <p class="no-tickets">Vous n'avez encore acheté aucun billet.</p>
-        {% else %}
-            {% for ticket in tickets %}
-                <div class="ticket">
-                    <strong>{{ ticket.event.title }}</strong><br>
-                    {{ ticket.ticketType.name }} — {{ ticket.ticketType.price }} €<br>
-                    <small>Code : {{ ticket.code }}</small>
-                    <small>Acheté le {{ ticket.createdAt|date('d/m/Y H:i') }}</small>
-                    <small>Status : {{ ticket.status }}</small>
+                <span class="status status-{{ ticket.status|lower }}">
+                    {{ ticket.status|capitalize }}
+                </span>
 
-                    {% if ticket.status == 'payé' %}
-                        <a href="{{ path('app_ticket_delete', { id: ticket.id }) }}"
-                           onclick="return confirm('Confirmer la suppression de ce billet ?');"
-                           class="delete-link">
-                           Supprimer
-                        </a>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% else %}
-        <h1>Vous devez être connecté pour voir votre profil.</h1>
-    {% endif %}
+                <p>Code : <span class="ticket-code">{{ ticket.code }}</span></p>
+
+                <button class="btn-primary" onclick="openModal('{{ ticket.code|e('js') }}')">
+                    Voir le billet
+                </button>
+
+                {% if ticket.status == 'payé' %}
+                    <a href="{{ path('app_ticket_delete', { id: ticket.id }) }}" class="btn-cancel">Annuler</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- ✅ Modale HTML -->
+<div id="ticketModal">
+    <div class="modal-content">
+        <h2>Votre billet</h2>
+        <canvas id="modalQrCanvas"></canvas>
+        <p style="margin-top:1rem;">Code : <span id="modalTicketCode" style="font-family: monospace; font-weight:bold;"></span></p>
+        <button onclick="closeModal()" style="margin-top:1rem;">Fermer</button>
+    </div>
 </div>
 
 <footer class="bottom-nav">
@@ -135,5 +204,41 @@
     <a href="{{ path('app_categories') }}" class="{% if app.request.attributes.get('_route') == 'app_categories' %}active{% endif %}">
         🔍<br>Explorer
     </a>
+{% if is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('admin') }}" class="{% if app.request.attributes.get('_route') == 'admin' %}active{% endif %}">
+        🔨<br>Admin
+    </a>
+{% endif %}
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
+<script>
+    // Toujours fermer la modale au chargement
+    document.addEventListener('DOMContentLoaded', () => {
+        closeModal();
+    });
+
+    function openModal(code) {
+        if (!code || code === 'undefined') {
+            closeModal();
+            return;
+        }
+
+        // ⚡ On recrée un nouveau QR à chaque clic => zéro bug
+        new QRious({
+            element: document.getElementById('modalQrCanvas'),
+            size: 200,
+            value: code
+        });
+
+        document.getElementById('modalTicketCode').innerText = code;
+        document.getElementById('ticketModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('ticketModal').style.display = 'none';
+    }
+</script>
+
+
 {% endblock %}

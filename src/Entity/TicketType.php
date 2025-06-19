@@ -29,22 +29,10 @@ class TicketType
     #[ORM\JoinColumn(nullable: false)]
     private ?Event $event = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ticketTypes')]
-    private ?User $user = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $stock = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $code = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
-
-    /**
-     * @var Collection<int, Ticket>
-     */
-    #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'TicketType')]
+    #[ORM\OneToMany(mappedBy: 'ticketType', targetEntity: Ticket::class, orphanRemoval: true)]
     private Collection $tickets;
 
     public function __construct()
@@ -105,59 +93,17 @@ class TicketType
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getStock(): ?int
     {
-        return $this->user;
+        return $this->stock;
     }
 
-    public function setUser(?User $user): static
+    public function setStock(int $stock): static
     {
-        $this->user = $user;
+        $this->stock = $stock;
 
         return $this;
     }
-
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): static
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
-    }
-
 
     /**
      * @return Collection<int, Ticket>
@@ -180,12 +126,21 @@ class TicketType
     public function removeTicket(Ticket $ticket): static
     {
         if ($this->tickets->removeElement($ticket)) {
-            // set the owning side to null (unless already changed)
             if ($ticket->getTicketType() === $this) {
                 $ticket->setTicketType(null);
             }
         }
 
         return $this;
+    }
+
+    public function getAvailableStock(): int
+    {
+        return $this->tickets->filter(fn($t) => $t->getStatus() === 'disponible')->count();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
     }
 }

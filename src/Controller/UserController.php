@@ -25,7 +25,7 @@ class UserController extends AbstractController
         $tickets = $ticketRepository->findBy(['user' => $user]);
 
         return $this->render('user/profile.html.twig', [
-            'tickets' => $tickets
+            'tickets' => $tickets  // ✅ Juste la liste brute, pas de QR côté PHP
         ]);
     }
 
@@ -38,22 +38,24 @@ class UserController extends AbstractController
         $user = $security->getUser();
 
         if (!$user) {
-            throw $this->createAccessDeniedException('Vous devez être connecté pour supprimer un billet.');
+            throw $this->createAccessDeniedException('Vous devez être connecté pour annuler un billet.');
         }
 
         if ($ticket->getUser() !== $user) {
-            throw $this->createAccessDeniedException('Vous ne pouvez supprimer que vos propres billets.');
+            throw $this->createAccessDeniedException('Vous ne pouvez annuler que vos propres billets.');
         }
 
         if ($ticket->getStatus() !== 'payé') {
-            $this->addFlash('error', 'Seuls les billets payés peuvent être supprimés.');
+            $this->addFlash('error', 'Seuls les billets payés peuvent être annulés.');
             return $this->redirectToRoute('app_profile');
         }
 
-        $entityManager->remove($ticket);
+        $ticket->setStatus('disponible');
+        $ticket->setUser(null);
+
         $entityManager->flush();
 
-        $this->addFlash('success', 'Billet supprimé avec succès.');
+        $this->addFlash('success', 'Billet annulé et remis en vente.');
 
         return $this->redirectToRoute('app_profile');
     }

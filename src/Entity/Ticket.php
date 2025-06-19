@@ -13,70 +13,40 @@ class Ticket
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(targetEntity: Event::class, inversedBy: 'tickets')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Event $event = null;
+
+    #[ORM\ManyToOne(targetEntity: TicketType::class, inversedBy: 'tickets')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TicketType $ticketType = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $user = null;
+
     #[ORM\Column(length: 255)]
     private ?string $code = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
-    private ?User $user = null;
-
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
-    private ?TicketType $ticketType = null;
-
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
-    private ?Event $event = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCode(): ?string
+    public function getEvent(): ?Event
     {
-        return $this->code;
+        return $this->event;
     }
 
-    public function setCode(string $code): static
+    public function setEvent(?Event $event): static
     {
-        $this->code = $code;
-        return $this;
-    }
+        $this->event = $event;
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): static
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
         return $this;
     }
 
@@ -88,17 +58,60 @@ class Ticket
     public function setTicketType(?TicketType $ticketType): static
     {
         $this->ticketType = $ticketType;
+
         return $this;
     }
 
-    public function getEvent(): ?Event
+    public function getUser(): ?User
     {
-        return $this->event;
+        return $this->user;
     }
 
-    public function setEvent(?Event $event): static
+    public function setUser(?User $user): static
     {
-        $this->event = $event;
+        $this->user = $user;
+
         return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): static
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->code ?? '';
     }
 }

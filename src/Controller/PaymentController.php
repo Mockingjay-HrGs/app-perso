@@ -8,13 +8,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 class PaymentController extends AbstractController
 {
     #[Route('/paiement/{id}', name: 'app_ticket_pay')]
     public function pay(
-        TicketType             $ticketType,
+        TicketType $ticketType,
         EntityManagerInterface $em
     ): Response
     {
@@ -25,15 +24,23 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $ticket = new Ticket();
+        // ✅ Cherche un Ticket EXISTANT, disponible pour ce type
+        $ticket = $em->getRepository(Ticket::class)->findOneBy([
+            'ticketType' => $ticketType,
+            'status' => 'disponible',
+        ]);
+
+        if (!$ticket) {
+            $this->addFlash('error', 'Plus de billet disponible pour ce type.');
+            return $this->redirectToRoute('event_show', [
+                'slug' => $ticketType->getEvent()->getSlug(),
+            ]);
+        }
+
+        // ✅ Réserve ce ticket
         $ticket->setUser($user);
-        $ticket->setTicketType($ticketType);
-        $ticket->setEvent($ticketType->getEvent());
-        $ticket->setCode(uniqid('TICKET-'));
-        $ticket->setCreatedAt(new \DateTimeImmutable());
         $ticket->setStatus('payé');
 
-        $em->persist($ticket);
         $em->flush();
 
         $this->addFlash('success', 'Billet ajouté à votre profil !');

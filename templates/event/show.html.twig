@@ -171,19 +171,19 @@
 
     <h3 style="margin-top:2rem;">🎟️ Billets disponibles</h3>
 
-    {% for ticketType in ticketTypes %}
+    {% for item in ticketTypes %}
+        {% set ticketType = item.ticketType %}
         <div class="ticket-card">
             <strong>{{ ticketType.name }}</strong>
             {{ ticketType.description }}<br>
             <span>{{ ticketType.price }} €</span>
-            {% if ticketType.id is defined and ticketType.id is not null %}
-                <a href="{{ path('app_ticket_pay', {
-                    eventSlug: event.slug,
-                    id: ticketType.id
-                }) }}" class="btn-primary">Acheter</a>
-            {% else %}
-                <p style="color: #bbb;">ID de billet manquant.</p>
-            {% endif %}
+            <p style="margin-top: 0.5rem; color: #0f0;">
+                {{ item.available }} billets disponibles
+            </p>
+            <a href="{{ path('app_ticket_pay', {
+                eventSlug: event.slug,
+                id: ticketType.id
+            }) }}" class="btn-primary">Acheter</a>
         </div>
     {% endfor %}
 </div>

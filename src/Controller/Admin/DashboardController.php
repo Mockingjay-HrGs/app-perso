@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Event;
 use App\Entity\Category;
 use App\Entity\Ticket;
+use App\Entity\TicketType;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -33,12 +34,12 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
-        // ✅ Bouton pour revenir sur le site public : catégories
-        yield MenuItem::linkToUrl('← Retour au site', 'fas fa-arrow-left', $this->generateUrl('app_categories'));
+        yield MenuItem::linkToUrl('Retour au site', 'fas fa-arrow-left', $this->generateUrl('app_categories'));
 
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
         yield MenuItem::linkToCrud('Catégories', 'fas fa-tags', Category::class);
         yield MenuItem::linkToCrud('Événements', 'fas fa-calendar', Event::class);
         yield MenuItem::linkToCrud('Ticket', 'fas fa-ticket-alt', Ticket::class);
+        yield MenuItem::linkToCrud('Types de Billets', 'fas fa-ticket', TicketType::class);
     }
 }
