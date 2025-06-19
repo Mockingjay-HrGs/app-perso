@@ -221,6 +221,11 @@
     <a href="{{ path('app_categories') }}" class="{% if app.request.attributes.get('_route') == 'app_categories' %}active{% endif %}">
         🔍<br>Explorer
     </a>
+    {% if is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('admin') }}" class="{% if app.request.attributes.get('_route') == 'admin' %}active{% endif %}">
+        🔨<br>Admin
+    </a>
+    {% endif %}
 </footer>
 
 {% endblock %}

@@ -53,6 +53,14 @@
         margin-top: 0.3rem;
     }
 
+    .ticket a.delete-link {
+        display: inline-block;
+        margin-top: 0.5rem;
+        color: #e74c3c;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
     .no-tickets {
         text-align: center;
         font-style: italic;
@@ -103,6 +111,15 @@
                     {{ ticket.ticketType.name }} — {{ ticket.ticketType.price }} €<br>
                     <small>Code : {{ ticket.code }}</small>
                     <small>Acheté le {{ ticket.createdAt|date('d/m/Y H:i') }}</small>
+                    <small>Status : {{ ticket.status }}</small>
+
+                    {% if ticket.status == 'payé' %}
+                        <a href="{{ path('app_ticket_delete', { id: ticket.id }) }}"
+                           onclick="return confirm('Confirmer la suppression de ce billet ?');"
+                           class="delete-link">
+                           Supprimer
+                        </a>
+                    {% endif %}
                 </div>
             {% endfor %}
         {% endif %}

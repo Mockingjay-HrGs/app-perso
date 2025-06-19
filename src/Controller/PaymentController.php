@@ -31,7 +31,7 @@ class PaymentController extends AbstractController
         $ticket->setEvent($ticketType->getEvent());
         $ticket->setCode(uniqid('TICKET-'));
         $ticket->setCreatedAt(new \DateTimeImmutable());
-        $ticket->setStatus('paid');
+        $ticket->setStatus('payé');
 
         $em->persist($ticket);
         $em->flush();
