@@ -46,9 +46,10 @@ class UserController extends AbstractController
         }
 
         if ($ticket->getStatus() !== 'payé') {
-            $this->addFlash('error', 'Seuls les billets payés peuvent être annulés.');
+            $this->addFlash('danger', 'Seuls les billets payés peuvent être annulés.');
             return $this->redirectToRoute('app_profile');
         }
+
 
         $ticket->setStatus('disponible');
         $ticket->setUser(null);
