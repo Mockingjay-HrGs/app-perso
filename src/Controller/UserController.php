@@ -25,7 +25,7 @@ class UserController extends AbstractController
         $tickets = $ticketRepository->findBy(['user' => $user]);
 
         return $this->render('user/profile.html.twig', [
-            'tickets' => $tickets  // ✅ Juste la liste brute, pas de QR côté PHP
+            'tickets' => $tickets
         ]);
     }
 

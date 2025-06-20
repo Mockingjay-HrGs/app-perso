@@ -19,7 +19,7 @@
         font-weight: bold;
     }
 
-    /* Barre de recherche */
+
     .search-bar-container {
         text-align: center;
         margin: 1rem 1.5rem 2rem;
@@ -62,7 +62,6 @@
         background: #4a4efc;
     }
 
-    /* Grille catégories */
     .category-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -93,7 +92,6 @@
         box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
     }
 
-    /* Grille événements */
     .event-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -141,7 +139,6 @@
         margin-top: 1rem;
     }
 
-    /* Footer */
     .bottom-nav {
         position: fixed;
         bottom: 0;
@@ -182,7 +179,6 @@
     <button type="submit">Rechercher</button>
 </form>
 
-<!-- Grille des catégories -->
 <div class="category-grid">
     {% for category in categories %}
         <a href="{{ path('app_category_detail', { slug: category.slug }) }}" class="category-card">
@@ -191,7 +187,6 @@
     {% endfor %}
 </div>
 
-<!-- Résultats de recherche (événements filtrés) -->
 {% if query %}
     <h2 style="text-align:center; margin-top: 2rem;">Résultats pour « {{ query }} » :</h2>
 {% endif %}
@@ -213,7 +208,6 @@
 </div>
 
 
-<!-- Footer -->
 <footer class="bottom-nav">
     <a href="{{ path('app_profile') }}" class="{% if app.request.attributes.get('_route') == 'app_profile' %}active{% endif %}">
         👤<br>Profil
@@ -226,6 +220,11 @@
         🔨<br>Admin
     </a>
     {% endif %}
+    {% if app.user %}
+        <a href="{{ path('app_logout') }}">
+            🚪<br>Déconnexion
+        </a>
+        {% endif %}
 </footer>
 
 {% endblock %}

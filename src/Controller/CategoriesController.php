@@ -19,11 +19,9 @@ final class CategoriesController extends AbstractController
     ): Response {
         $categories = $categoryRepository->findAll();
 
-        // ✅ Récupère ?q= depuis l'URL
         $query = $request->query->get('q');
 
         if ($query) {
-            // ✅ Requête filtrée avec Doctrine DQL
             $events = $eventRepository->createQueryBuilder('e')
                 ->where('LOWER(e.title) LIKE :q')
                 ->setParameter('q', '%' . strtolower($query) . '%')
@@ -36,7 +34,7 @@ final class CategoriesController extends AbstractController
         return $this->render('categories/index.html.twig', [
             'categories' => $categories,
             'events' => $events,
-            'query' => $query // ✅ Pour pré-remplir l'input
+            'query' => $query
         ]);
     }
 

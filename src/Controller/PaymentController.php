@@ -24,7 +24,6 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // ✅ Cherche un Ticket EXISTANT, disponible pour ce type
         $ticket = $em->getRepository(Ticket::class)->findOneBy([
             'ticketType' => $ticketType,
             'status' => 'disponible',
@@ -37,7 +36,6 @@ class PaymentController extends AbstractController
             ]);
         }
 
-        // ✅ Réserve ce ticket
         $ticket->setUser($user);
         $ticket->setStatus('payé');
 

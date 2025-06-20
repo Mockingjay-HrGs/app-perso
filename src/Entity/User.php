@@ -95,7 +95,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -131,8 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+
     }
 
     public function isVerified(): bool
@@ -168,7 +166,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeTicketType(TicketType $ticketType): static
     {
         if ($this->ticketTypes->removeElement($ticketType)) {
-            // set the owning side to null (unless already changed)
             if ($ticketType->getUser() === $this) {
                 $ticketType->setUser(null);
             }
@@ -198,7 +195,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeTicket(Ticket $ticket): static
     {
         if ($this->tickets->removeElement($ticket)) {
-            // set the owning side to null (unless already changed)
             if ($ticket->getUser() === $this) {
                 $ticket->setUser(null);
             }

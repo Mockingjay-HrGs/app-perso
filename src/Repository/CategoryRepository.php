@@ -16,6 +16,4 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-    // Tu peux ici créer des méthodes custom, par ex :
-    // public function findBySlug(string $slug): ?Category {}
 }

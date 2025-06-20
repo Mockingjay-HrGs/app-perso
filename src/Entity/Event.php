@@ -70,7 +70,6 @@ class Event
         return $this;
     }
 
-    // Getters & setters
 
     public function getId(): ?int { return $this->id; }
 
